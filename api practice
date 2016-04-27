@@ -1,5 +1,0 @@
-<?
-
-var value = "body";
-var name = value.sports[0].name;
-var  pro = value.sports[0].pro_abbrev;

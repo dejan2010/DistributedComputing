@@ -2,81 +2,81 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class server_frame extends javax.swing.JFrame 
+public class server_frame extends javax.swing.JFrame
 {
-   ArrayList clientOutputStreams;
-   ArrayList<String> users;
+    ArrayList clientOutputStreams;
+    ArrayList<String> users;
 
-   public class ClientHandler implements Runnable	
-   {
-       BufferedReader reader;
-       Socket sock;
-       PrintWriter client;
+    public class ClientHandler implements Runnable
+    {
+        BufferedReader reader;
+        Socket sock;
+        PrintWriter client;
 
-       public ClientHandler(Socket clientSocket, PrintWriter user) 
-       {
+        public ClientHandler(Socket clientSocket, PrintWriter user)
+        {
             client = user;
-            try 
+            try
             {
                 sock = clientSocket;
                 InputStreamReader isReader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(isReader);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ta_chat.append("Unexpected error... \n");
             }
 
-       }
+        }
 
-       @Override
-       public void run() 
-       {
+        @Override
+        public void run()
+        {
             String message, connect = "Connect", disconnect = "Disconnect", chat = "Chat" ;
             String[] data;
 
-            try 
+            try
             {
-                while ((message = reader.readLine()) != null) 
+                while ((message = reader.readLine()) != null)
                 {
                     ta_chat.append("Received: " + message + "\n");
                     data = message.split(":");
-                    
-                    for (String token:data) 
+
+                    for (String token:data)
                     {
                         ta_chat.append(token + "\n");
                     }
 
-                    if (data[2].equals(connect)) 
+                    if (data[2].equals(connect))
                     {
                         tellEveryone((data[0] + ":" + data[1] + ":" + chat));
                         userAdd(data[0]);
-                    } 
-                    else if (data[2].equals(disconnect)) 
+                    }
+                    else if (data[2].equals(disconnect))
                     {
                         tellEveryone((data[0] + ":has disconnected." + ":" + chat));
                         userRemove(data[0]);
-                    } 
-                    else if (data[2].equals(chat)) 
+                    }
+                    else if (data[2].equals(chat))
                     {
                         tellEveryone(message);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         ta_chat.append("No Conditions were met. \n");
                     }
-                } 
-             } 
-             catch (Exception ex) 
-             {
+                }
+            }
+            catch (Exception ex)
+            {
                 ta_chat.append("Lost a connection. \n");
                 ex.printStackTrace();
                 clientOutputStreams.remove(client);
-             } 
-	    }
+            }
+        }
     }
 
-    public server_frame() 
+    public server_frame()
     {
         initComponents();
     }
@@ -130,71 +130,68 @@ public class server_frame extends javax.swing.JFrame
             }
         });
 
-        lb_name.setText("Distributed Computing Chat Project");
+       lb_name.setText("Distributed Computing Chat Project");
         lb_name.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(b_end, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_start, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 291, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(b_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_users, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lb_name)
-                .addGap(209, 209, 209))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(b_end, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(b_start, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 291, Short.MAX_VALUE)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(b_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(b_users, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))))
+                                .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lb_name)
+                                .addGap(209, 209, 209))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_start)
-                    .addComponent(b_users))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_clear)
-                    .addComponent(b_end))
-                .addGap(4, 4, 4)
-                .addComponent(lb_name))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(b_start)
+                                        .addComponent(b_users))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(b_clear)
+                                        .addComponent(b_end))
+                                .addGap(4, 4, 4)
+                                .addComponent(lb_name))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_endActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_endActionPerformed
-        try 
+        try
         {
             Thread.sleep(5000);                 //5000 milliseconds is five second.
-        } 
-        catch(InterruptedException ex)
-        {
-            Thread.currentThread().interrupt();
         }
-        
+        catch(InterruptedException ex) {Thread.currentThread().interrupt();}
+
         tellEveryone("Server:is stopping and all users will be disconnected.\n:Chat");
         ta_chat.append("Server stopping... \n");
-        
+
         ta_chat.setText("");
     }//GEN-LAST:event_b_endActionPerformed
 
     private void b_startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_startActionPerformed
         Thread starter = new Thread(new ServerStart());
         starter.start();
-        
+
         ta_chat.append("Server started...\n");
     }//GEN-LAST:event_b_startActionPerformed
 
@@ -204,17 +201,17 @@ public class server_frame extends javax.swing.JFrame
         {
             ta_chat.append(current_user);
             ta_chat.append("\n");
-        }    
-        
+        }
+
     }//GEN-LAST:event_b_usersActionPerformed
 
     private void b_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_clearActionPerformed
         ta_chat.setText("");
     }//GEN-LAST:event_b_clearActionPerformed
 
-    public static void main(String args[]) 
+    public static void main(String args[])
     {
-        java.awt.EventQueue.invokeLater(new Runnable() 
+        java.awt.EventQueue.invokeLater(new Runnable()
         {
             @Override
             public void run() {
@@ -222,28 +219,28 @@ public class server_frame extends javax.swing.JFrame
             }
         });
     }
-    
-    public class ServerStart implements Runnable 
+
+    public class ServerStart implements Runnable
     {
         @Override
-        public void run() 
+        public void run()
         {
             clientOutputStreams = new ArrayList();
-            users = new ArrayList();  
+            users = new ArrayList();
 
-            try 
+            try
             {
                 ServerSocket serverSock = new ServerSocket(2222);
 
-                while (true) 
+                while (true)
                 {
-				Socket clientSock = serverSock.accept();
-				PrintWriter writer = new PrintWriter(clientSock.getOutputStream());
-				clientOutputStreams.add(writer);
+                    Socket clientSock = serverSock.accept();
+                    PrintWriter writer = new PrintWriter(clientSock.getOutputStream());
+                    clientOutputStreams.add(writer);
 
-				Thread listener = new Thread(new ClientHandler(clientSock, writer));
-				listener.start();
-				ta_chat.append("Got a connection. \n");
+                    Thread listener = new Thread(new ClientHandler(clientSock, writer));
+                    listener.start();
+                    ta_chat.append("Got a connection. \n");
                 }
             }
             catch (Exception ex)
@@ -252,8 +249,8 @@ public class server_frame extends javax.swing.JFrame
             }
         }
     }
-    
-    public void userAdd (String data) 
+
+    public void userAdd (String data)
     {
         String message, add = ": :Connect", done = "Server: :Done", name = data;
         ta_chat.append("Before " + name + " added. \n");
@@ -262,51 +259,51 @@ public class server_frame extends javax.swing.JFrame
         String[] tempList = new String[(users.size())];
         users.toArray(tempList);
 
-        for (String token:tempList) 
+        for (String token:tempList)
         {
             message = (token + add);
             tellEveryone(message);
         }
         tellEveryone(done);
     }
-    
-    public void userRemove (String data) 
+
+    public void userRemove (String data)
     {
         String message, add = ": :Connect", done = "Server: :Done", name = data;
         users.remove(name);
         String[] tempList = new String[(users.size())];
         users.toArray(tempList);
 
-        for (String token:tempList) 
+        for (String token:tempList)
         {
             message = (token + add);
             tellEveryone(message);
         }
         tellEveryone(done);
     }
-    
-    public void tellEveryone(String message) 
-    {
-	Iterator it = clientOutputStreams.iterator();
 
-        while (it.hasNext()) 
+    public void tellEveryone(String message)
+    {
+        Iterator it = clientOutputStreams.iterator();
+
+        while (it.hasNext())
         {
-            try 
+            try
             {
                 PrintWriter writer = (PrintWriter) it.next();
-		        writer.println(message);
-		        ta_chat.append("Sending: " + message + "\n");
+                writer.println(message);
+                ta_chat.append("Sending: " + message + "\n");
                 writer.flush();
                 ta_chat.setCaretPosition(ta_chat.getDocument().getLength());
 
-            } 
-            catch (Exception ex) 
-            {
-		ta_chat.append("Error telling everyone. \n");
             }
-        } 
+            catch (Exception ex)
+            {
+                ta_chat.append("Error telling everyone. \n");
+            }
+        }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_clear;
     private javax.swing.JButton b_end;
